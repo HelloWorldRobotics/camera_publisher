@@ -14,7 +14,8 @@ setup(
         ('share/' + package_name, ['package.xml']),
         # Include launch files
         (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
-        (os.path.join('share', package_name, 'config'), glob('config/*.yaml'))
+        (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
+        (os.path.join('share', package_name, 'config/uitm'), glob('config/uitm/*.yaml'))
     ],
     install_requires=['setuptools'],
     zip_safe=True,

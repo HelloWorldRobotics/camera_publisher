@@ -10,7 +10,6 @@ class CameraPublisher(Node):
     def __init__(self):
         super().__init__('camera_publisher')
         
-        # Add parameters
         self.declare_parameter('flip_image', True)
         self.declare_parameter('publish_compressed', False)
         self.declare_parameter('camera_device', '/dev/buggy_cam_back')
@@ -27,9 +26,7 @@ class CameraPublisher(Node):
         self.uitm_topics = self.get_parameter('uitm_topics').value
         self.uitm_calibration_file = self.get_parameter('uitm_calibration_file').value
         
-        # Load camera calibration
         try:
-            # Get the package share directory
             package_share_dir = get_package_share_directory('camera_publisher')
             calibration_file_path = os.path.join(package_share_dir, self.calibration_file)
             
@@ -46,7 +43,6 @@ class CameraPublisher(Node):
             
         except Exception as e:
             self.get_logger().error(f'Failed to load camera calibration: {str(e)}')
-            # Use default values as fallback
             self.camera_matrix = [
                 751.748554, 0.000000, 656.307374,
                 0.000000, 754.534212, 368.645691,
@@ -68,20 +64,16 @@ class CameraPublisher(Node):
         self.publisher_raw = self.create_publisher(Image, 'image/raw', 10)
         self.publisher_camera_info = self.create_publisher(CameraInfo, 'camera_info', 10)
         
-        # Try to open camera with MJPG format
         try:
             self.cap = cv2.VideoCapture(self.camera_device, cv2.CAP_V4L2)  # Use the parameter here
             if not self.cap.isOpened():
                 raise ValueError(f"Failed to open camera at {self.camera_device}")
             
-            # Set pixel format to MJPG
             self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
             
-            # Set resolution to 1280x720
             self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
             self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
             
-            # Set FPS to 60
             self.cap.set(cv2.CAP_PROP_FPS, 60)
 
         except Exception as e:
@@ -97,10 +89,9 @@ class CameraPublisher(Node):
 
         self.fps = self.cap.get(cv2.CAP_PROP_FPS)
 
-        # Set up timer for callback
         self.timer = self.create_timer(1.0 / self.fps, self.timer_callback)
         
-        # Add camera calibration parameters
+        # Fallback calibration parameters
         self.camera_matrix = [
             751.748554, 0.000000, 656.307374,
             0.000000, 754.534212, 368.645691,
@@ -121,13 +112,11 @@ class CameraPublisher(Node):
             0.000000, 0.000000, 1.000000, 0.000000
         ]
 
-        # Add UITM publishers after the existing publishers
         if self.uitm_topics:
             self.uitm_publisher_raw = self.create_publisher(Image, 'uitm/image/raw', 10)
             self.uitm_publisher_compressed = self.create_publisher(CompressedImage, 'uitm/image/compressed', 10)
             self.uitm_publisher_camera_info = self.create_publisher(CameraInfo, 'uitm/camera_info', 10)
             
-            # Load UITM camera calibration
             try:
                 uitm_calibration_file_path = os.path.join(package_share_dir, self.uitm_calibration_file)
                 with open(uitm_calibration_file_path, 'r') as file:
@@ -143,7 +132,6 @@ class CameraPublisher(Node):
                 
             except Exception as e:
                 self.get_logger().error(f'Failed to load UITM camera calibration: {str(e)}')
-                # Use default values or copy from main camera calibration
                 self.uitm_camera_matrix = self.camera_matrix
                 self.uitm_distortion_coeffs = self.distortion_coeffs
                 self.uitm_rectification_matrix = self.rectification_matrix
@@ -152,13 +140,11 @@ class CameraPublisher(Node):
     def timer_callback(self):
         ret, frame = self.cap.read()
         if ret:
-            # Flip image horizontally if parameter is True
             if self.flip_image:
                 frame = cv2.rotate(frame, cv2.ROTATE_180)
             
             current_time = self.get_clock().now().to_msg()
             
-            # Always publish raw image
             msg_raw = Image()
             msg_raw.header.stamp = current_time
             msg_raw.header.frame_id = self.frame_id
@@ -169,7 +155,6 @@ class CameraPublisher(Node):
             self.publisher_raw.publish(msg_raw)
             self.get_logger().debug('Publishing raw image')
             
-            # Additionally publish compressed image if parameter is true
             if self.publish_compressed:
                 msg_compressed = CompressedImage()
                 msg_compressed.header.stamp = current_time
@@ -192,7 +177,6 @@ class CameraPublisher(Node):
             
             self.publisher_camera_info.publish(camera_info_msg)
             
-            # Add UITM publishing
             if self.uitm_topics:
                 # Resize frame to 640x480 for UITM
                 uitm_frame = cv2.resize(frame, (640, 480))
