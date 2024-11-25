@@ -1,0 +1,20 @@
+image_width: 1280
+image_height: 720
+camera_name: back_camera
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [751.748554, 0.000000, 656.307374, 0.000000, 754.534212, 368.645691, 0.000000, 0.000000, 1.000000]
+distortion_model: plumb_bob
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [-0.351268, 0.087101, 0.000186, -0.003012, 0.000000]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [494.303589, 0.000000, 647.948443, 0.000000, 0.000000, 685.485107, 370.209981, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000]

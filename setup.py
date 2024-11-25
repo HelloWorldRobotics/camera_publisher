@@ -26,7 +26,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'camera_publisher = camera_publisher.camera_publisher:main'
+            'camera_publisher = camera_publisher.camera_publisher:main',
+            'image_rotate = camera_publisher.image_rotate:main'
         ],
     },
 )

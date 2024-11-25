@@ -17,7 +17,7 @@ def generate_launch_description():
                     'calibration_file': 'config/back.yaml',
                     'flip_image': True,
                     'publish_compressed': True,
-                    'uitm_topics': True,
+                    'uitm_topics': False,
                     'uitm_calibration_file': 'config/uitm/back.yaml'
                 }
             ]
@@ -37,7 +37,7 @@ def generate_launch_description():
                 'calibration_file': 'config/left.yaml',
                 'flip_image': False,
                 'publish_compressed': True,
-                'uitm_topics': True,
+                'uitm_topics': False,
                 'uitm_calibration_file': 'config/uitm/left.yaml'
             }
         ]
@@ -57,7 +57,7 @@ def generate_launch_description():
                 'calibration_file': 'config/right.yaml',
                 'flip_image': False,
                 'publish_compressed': True,
-                'uitm_topics': True,
+                'uitm_topics': False,
                 'uitm_calibration_file': 'config/uitm/right.yaml'
             }
         ]
@@ -77,7 +77,7 @@ def generate_launch_description():
                 'calibration_file': 'config/back.yaml',
                 'flip_image': False,
                 'publish_compressed': True,
-                'uitm_topics': True,
+                'uitm_topics': False,
                 'uitm_calibration_file': 'config/uitm/back.yaml'
             }
         ]
@@ -86,7 +86,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         back_camera,
-        left_camera,
-        right_camera,
-        front_camera
+        # left_camera,
+        # right_camera,
+        # front_camera
     ])
