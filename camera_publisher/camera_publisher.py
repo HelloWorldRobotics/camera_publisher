@@ -71,13 +71,14 @@ class CameraPublisher(Node):
             
             self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
             
+            self.cap.set(cv2.CAP_PROP_FPS, 60)
             self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
             self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
             
-            self.cap.set(cv2.CAP_PROP_FPS, 60)
+            self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 3)
 
         except Exception as e:
-            self.get_logger().warn(f"Failed to open camera: {str(e)}")
+            self.get_logger().warn(f"Exception: {str(e)}")
             raise
 
         # Verify settings
@@ -160,7 +161,7 @@ class CameraPublisher(Node):
                 msg_compressed.header.stamp = current_time
                 msg_compressed.header.frame_id = self.frame_id
                 msg_compressed.format = "jpeg"
-                msg_compressed.data = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 90])[1].tobytes()
+                msg_compressed.data = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 40])[1].tobytes()
                 self.publisher_compressed.publish(msg_compressed)
                 self.get_logger().debug('Publishing compressed image')
             
